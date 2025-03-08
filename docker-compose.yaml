@@ -5,5 +5,7 @@ services:
       context: .
       args:
         - TOKEN
+        - CAL_ID
     environment:
       - TOKEN=${TOKEN}
+      - CAL_ID=${CAL_ID}
