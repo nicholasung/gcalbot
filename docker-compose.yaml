@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  gcalbot:
+    build: 
+      context: .
+      args:
+        - TOKEN
+    environment:
+      - TOKEN=${TOKEN}
