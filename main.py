@@ -34,19 +34,27 @@ def datetimeToStr(datetime):
 
 for event in events:
     print(event.summary + " " + datetimeToStr(event.start))
+    if event.summary == "test":
+        update = event
 
-year = 2025
-month = 3
-day = 9
-hour = 13
-min = 25
-hour_duration = 2.5
+# year = 2025
+# month = 3
+# day = 9
+# hour = 13
+# min = 25
+# hour_duration = 2.5
 
-start = datetime(year, month, day, hour, min)
-end = start + timedelta(hours=hour_duration)
-event = Event('test', start, end)
+# start = datetime(year, month, day, hour, min)
+# end = start + timedelta(hours=hour_duration)
+# event = Event('test', start, end)
 
 # print(event.summary + " " + datetimeToStr(event.start) + " end at " + datetimeToStr(event.end))
-response = gc.add_event(event)
+# response = gc.add_event(event)
+# print(response)
+
+
+update.location = "OVER HERE"
+
+response = gc.update_event(update)
 print(response)
 
