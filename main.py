@@ -34,14 +34,22 @@ tree = app_commands.CommandTree(bot)
 def datetimeToStr(datetime):
     return datetime.strftime('%Y-%m-%d %H:%M:%S')
 
-def gcalEventFromName(name):
+def gcalEventFromName(name: str):
     result = None
     for event in list(gc.get_events()):
             if event.summary == name:
                 result = event
     return result
 
-def gcalAdd(name, start, end, location="" ): #adds an event to google Calendar with checks for prexisiting 
+def discordEventFromName(name: str, guild: discord.guild): #untest
+    list = guild.fetch_scheduled_events()
+    result = None
+    for event in list:
+        if event.name == name:
+            result = event
+
+
+def gcalAdd(name: str, start: datetime, end: datetime, location="" ): #adds an event to google Calendar with checks for prexisiting 
     event = gcalEventFromName(name)
     if(event == None):
         event = Event(summary=name, start=start, end=end, location=location)
@@ -53,7 +61,13 @@ def gcalAdd(name, start, end, location="" ): #adds an event to google Calendar w
         event.location = location
         event = gc.update_event(event) 
 
-# def discordAdd(name, start, end, location="" ):
+def discordAdd(name: str, start: datetime, end: datetime, guild: discord.guild, location="" ):
+    event = discordEventFromName(name=name, guild=guild)
+    if(event == None):
+        #create
+    else:
+        #update
+
 
          
      
