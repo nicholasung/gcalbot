@@ -41,47 +41,70 @@ def gcalEventFromName(name: str):
                 result = event
     return result
 
-def discordEventFromName(name: str, guild: discord.guild): #untest
-    list = guild.fetch_scheduled_events()
+async def discordEventFromName(name: str, guild: discord.guild): #untest
+    list = await guild.fetch_scheduled_events()
     result = None
     for event in list:
         if event.name == name:
             result = event
+    return result
 
 
-def gcalAdd(name: str, start: datetime, end: datetime, location="" ): #adds an event to google Calendar with checks for prexisiting 
+def gcalAdd(name: str, start: datetime, end: datetime, location: str): #adds an event to google Calendar with checks for prexisiting 
     event = gcalEventFromName(name)
+    if event is None:
+        if not location:
+            location = "Default Location" 
     if(event == None):
         event = Event(summary=name, start=start, end=end, location=location)
         event = gc.add_event(event)
+        print("added " + event.summary )
     else:
         event.summary = name
         event.start = start
         event.end = end
         event.location = location
         event = gc.update_event(event) 
+        print("updated " + event.summary )
 
-def discordAdd(name: str, start: datetime, end: datetime, guild: discord.guild, location="" ):
-    event = discordEventFromName(name=name, guild=guild)
+async def discordAdd(name: str, start: datetime, end: datetime, guild: discord.guild, location: str):
+    event = await discordEventFromName(name=name, guild=guild)
+    if event is None:
+        if not location:
+            location = "Default Location" 
     if(event == None):
-        #create
+        await guild.create_scheduled_event(name=name, start_time=start, end_time=end, location=location, entity_type=discord.EntityType.external, privacy_level= discord.PrivacyLevel.guild_only)
+        print("added " + name )
     else:
-        #update
-
-
-         
-     
+        await event.edit(name=name, start_time=start, end_time=end, location=location) 
+        print("updated " + event.name )
 
 @tree.command(name="status", description="Check the bot's status")
 async def status(interaction: discord.Interaction):
      await interaction.response.send_message('master manipulator is up', ephemeral=True)
      print(interaction.user.name + " requested status")
 
-# @tree.command(name="push", description="add discord events to gcal")
-# async def push(interaction:discord.Interaction):
-#     await interaction.response.defer()
-#     list = await interaction.guild.fetch_scheduled_events()
-#     for plan in list:
+@tree.command(name="push", description="add discord events to gcal")
+async def push(interaction:discord.Interaction):
+    reply = "Pushed: \n"
+    await interaction.response.defer()
+    list = await interaction.guild.fetch_scheduled_events()
+    for plan in list:
+        reply += plan.name
+        reply += '\n\n'
+        gcalAdd(name=plan.name, start=plan.start, end=plan.end, location=plan.location)
+    await interaction.followup.send(reply, ephemeral = False)
+
+@tree.command(name="pull", description="add gcal events to discord")
+async def pull(interaction:discord.Interaction):
+    reply = "Pulled: \n"
+    await interaction.response.defer()
+    list = calendar.get_events()
+    for plan in list:
+        reply += plan.summary
+        reply += '\n\n'
+        await discordAdd(name=plan.summary, start=plan.start, end=plan.end, location=plan.location, guild=interaction.guild)
+    await interaction.followup.send(reply, ephemeral = False)
          
 
 @tree.command(name="events", description="list all the current events in the server")
@@ -92,10 +115,8 @@ async def events(interaction:discord.Interaction):
     print(interaction.user.name + " requested events")
     for plan in list:
         print(plan.name)
-        reply = reply + plan.name + " | "
+        reply = reply + plan.name + '\n\n'
     await interaction.followup.send(reply, ephemeral = False)
-
-
 
 @bot.event
 async def on_ready():
