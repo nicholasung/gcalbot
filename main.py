@@ -97,7 +97,7 @@ async def delete(interaction:discord.Interaction, event:str):
     discord_event = await discordEventFromName(event, interaction.guild)
     gcal_event = gcalEventFromName(event)
     if((gcal_event != None) & (discord_event != None)):
-        discord_event.delete()
+        await discord_event.delete()
         gc.delete_event(gcal_event.id)
         print(event + " deleted by " + interaction.user.name)
         await interaction.followup.send( event + " deleted by " + interaction.user.name, ephemeral=False)
