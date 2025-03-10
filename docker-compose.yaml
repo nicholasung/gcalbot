@@ -6,6 +6,8 @@ services:
       args:
         - TOKEN
         - CAL_ID
+        - INV_LINK
     environment:
       - TOKEN=${TOKEN}
       - CAL_ID=${CAL_ID}
+      - INV_LINK=#{INV_LINK}

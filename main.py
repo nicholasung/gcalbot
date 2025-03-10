@@ -13,6 +13,7 @@ from datetime import datetime, timezone, date, time, timedelta
 load_dotenv()
 token = os.getenv('TOKEN')
 cal_id = os.getenv('CAL_ID')
+inv_link = os.getenv('INV_LINK')
 print(token)
 print(cal_id)
 
@@ -83,6 +84,27 @@ async def discordAdd(name: str, start: datetime, end: datetime, guild: discord.g
 async def status(interaction: discord.Interaction):
      await interaction.response.send_message('master manipulator is up', ephemeral=True)
      print(interaction.user.name + " requested status")
+
+@tree.command(name="gcal", description="get the google calendar link")
+async def status(interaction: discord.Interaction):
+     await interaction.response.send_message(inv_link, ephemeral=True)
+     print(interaction.user.name + " requested link")
+
+@tree.command(name="delete", description="delete an event from both calendars (EVENT MUST EXIST IN DISCORD)")
+@app_commands.describe(event="exact name of event to delete") #maybe make this use the link
+async def delete(interaction:discord.Interaction, event:str):
+    await interaction.response.defer()
+    discord_event = await discordEventFromName(event, interaction.guild)
+    gcal_event = gcalEventFromName(event)
+    if((gcal_event != None) & (discord_event != None)):
+        discord_event.delete()
+        gc.delete_event(gcal_event.id)
+        print(event + " deleted by " + interaction.user.name)
+        await interaction.followup.send( event + " deleted by " + interaction.user.name, ephemeral=False)
+    else:
+        print(interaction.user.name + " attempted to delete " + event)
+        await interaction.followup.send( event + " not found in one or both schedules", ephemeral=False)
+
 
 @tree.command(name="push", description="add discord events to gcal")
 async def push(interaction:discord.Interaction):

@@ -19,7 +19,7 @@
 TODO:
 improve efficiency o(n^2) time for push and pull. comebine into a sync somehow maybe?
 better implementation for a blank default location
-invite to calendar command
+add privacy or role checks to ensure privacy and allow the bot to be used in public servers safely (use implementation from match bot)
 
 
 needs token and calendar_id in the .env file. needs a .credentials folder at the root of the project with the google oauth service for authentication according to the gcsa library
