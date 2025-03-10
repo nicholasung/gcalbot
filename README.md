@@ -16,6 +16,11 @@
     - date and time
     - name of event
 
+TODO:
+improve efficiency o(n^2) time for push and pull. comebine into a sync somehow maybe?
+better implementation for a blank default location
+invite to calendar command
+
 
 needs token and calendar_id in the .env file. needs a .credentials folder at the root of the project with the google oauth service for authentication according to the gcsa library
 

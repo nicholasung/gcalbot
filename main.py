@@ -54,7 +54,7 @@ def gcalAdd(name: str, start: datetime, end: datetime, location: str): #adds an 
     event = gcalEventFromName(name)
     if event is None:
         if not location:
-            location = "Default Location" 
+            location = " " 
     if(event == None):
         event = Event(summary=name, start=start, end=end, location=location)
         event = gc.add_event(event)
@@ -71,7 +71,7 @@ async def discordAdd(name: str, start: datetime, end: datetime, guild: discord.g
     event = await discordEventFromName(name=name, guild=guild)
     if event is None:
         if not location:
-            location = "Default Location" 
+            location = " " 
     if(event == None):
         await guild.create_scheduled_event(name=name, start_time=start, end_time=end, location=location, entity_type=discord.EntityType.external, privacy_level= discord.PrivacyLevel.guild_only)
         print("added " + name )
@@ -92,7 +92,7 @@ async def push(interaction:discord.Interaction):
     for plan in list:
         reply += plan.name
         reply += '\n\n'
-        gcalAdd(name=plan.name, start=plan.start, end=plan.end, location=plan.location)
+        gcalAdd(name=plan.name, start=plan.start_time, end=plan.end_time, location=plan.location)
     await interaction.followup.send(reply, ephemeral = False)
 
 @tree.command(name="pull", description="add gcal events to discord")
