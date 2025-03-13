@@ -1,5 +1,19 @@
 # GCALBOT
+## setup info
+set up with python3. 
 
+pip install all of:
+gcsa,
+dotenv,
+discord,
+
+make a .env file at root with parameters of TOKEN, CAL_ID, and INV_LINK 
+
+Token holds the bot token, CAL_ID and INV_LINK hold information of the google calendar
+
+Reqires a authenitcation via a project in google cloud 
+
+## specs
 - Behaviour
     - Automatically Push, Pull and Sync every 24 hrs
     - Assign use name strings as ids to matching events in both places so if one changes it can sync
